@@ -1,1 +1,2 @@
-# Yandex_spectrogramm
+# Musicle
+Еще нужны ffprobe, ffmpeg, ffplay
