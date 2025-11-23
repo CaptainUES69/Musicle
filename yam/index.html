@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>quiz YaM</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Экран выбора сложности -->
+    <section id="difficultyScreen" class="difficulty-screen">
+        <div class="difficulty-container">
+            <h1>Музыкальный Квиз</h1>
+            <p>Выберите уровень сложности:</p>
+            
+            <div class="difficulty-options">
+                <button class="difficulty-btn" onclick="startQuiz('easy')">
+                    <span class="difficulty-name">Легкий</span>
+                    <span class="difficulty-desc">10 секунд на трек</span>
+                </button>
+                
+                <button class="difficulty-btn" onclick="startQuiz('medium')">
+                    <span class="difficulty-name">Средний</span>
+                    <span class="difficulty-desc">6 секунд на трек</span>
+                </button>
+                
+                <button class="difficulty-btn" onclick="startQuiz('hard')">
+                    <span class="difficulty-name">Сложный</span>
+                    <span class="difficulty-desc">2 секунды на трек</span>
+                </button>
+            </div>
+            
+        </div>
+    </section>
+
+    <!-- Основной интерфейс квиза (изначально скрыт) -->
+    <section id="quizScreen" class="audio-player" style="display: none;">
+
+            <!-- Заголовок -->
+    <div class="quiz-title">
+        YAMQUIZ
+    </div>
+        
+        <!-- Сам аудиофайл (остается невидимым) -->
+        <audio id="myAudio">
+            <!-- Источник теперь будет меняться через JavaScript -->
+        </audio>
+        
+        <!-- Кнопки управления -->
+        <div class="audio-controls">
+            <button onclick="playAudio()">Старт</button>
+            <button onclick="pauseAudio()">Пауза</button>
+            <button onclick="restartAudio()">С начала</button>
+        </div>
+
+        <!-- Информация о текущем треке -->
+        <div class="track-info">    
+            <p>Сейчас играет: <span id="currentTrackName">Трек 1</span></p>
+        </div>
+        
+        <!-- Полоса прогресса -->
+        <div class="audio-progress">
+            <progress id="audioProgress" value="0" max="100"></progress>
+        </div>
+
+        <!-- Поле для ввода кода перехода -->
+        <div class="answer-input">
+            <label for="answer">Введите название трека:</label>
+            <input type="text" id="answer" placeholder="Введите код...">
+            <button onclick="checkAnswer()">Проверить ответ</button>
+            <span id="answerMessage"></span>
+            
+            <!-- Кнопка рестарт -->
+            <button id="restartButton" onclick="restartQuiz()" style="display: none;">🎉 Начать заново!</button>
+        </div>
+
+        <!-- Регулятор громкости -->
+        <div class="volume-control">
+            <label for="volumeSlider">Громкость:</label>
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1" oninput="changeVolume(this.value)">
+            <span id="volumeValue">100%</span>
+        </div>
+    </section>
+
+<script src="script.js"></script>
+</body>
+</html>

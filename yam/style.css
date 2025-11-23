@@ -1,0 +1,373 @@
+/* Общие стили */
+body {
+    font-family: 'Helvetica', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: linear-gradient(135deg, #eeaf3b 0%, #d88f06 100%);
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Стили для экрана выбора сложности (оставляем как есть) */
+.difficulty-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.difficulty-container {
+    background: white;
+    padding: 3rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+}
+
+.difficulty-container h1 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 2.5rem;
+}
+
+.difficulty-container > p {
+    color: #666;
+    margin-bottom: 2rem;
+    font-size: 1.2rem;
+}
+
+.difficulty-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.difficulty-btn {
+    padding: 1.5rem;
+    border: none;
+    border-radius: 10px;
+    background: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.difficulty-btn:hover {
+    background: #e9ecef;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.difficulty-name {
+    display: block;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.difficulty-desc {
+    display: block;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+
+
+/* ОБНОВЛЕННЫЕ СТИЛИ ДЛЯ ОСНОВНОГО ИНТЕРФЕЙСА КВИЗА */
+.audio-player {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    margin: 2rem auto;
+    animation: fadeIn 0.5s ease-in;
+}
+
+/* Объявляем кастомный шрифт */
+@font-face {
+    font-family: 'YAM';
+    src: url('fonts/ysm.woff2') format('woff2'),
+         url('fonts/ysm.woff') format('woff');
+    font-weight: 400; /* Обычный */
+    font-style: normal;
+    font-display: swap; /* Чтобы текст не был невидим во время загрузки */
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Заголовок квиза */
+.quiz-title {
+    color: #333;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+/* Кнопки управления */
+.audio-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 1.5rem 0;
+    justify-content: center;
+}
+
+.audio-controls button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #eeaf3b 0%, #d88f06 100%);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.audio-controls button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.audio-controls button:active {
+    transform: translateY(0);
+}
+
+/* Информация о треке */
+.track-info {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border-left: 8px solid #d88f06;
+}
+
+.track-info p {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #333;
+    font-weight: 500;
+}
+
+/* Полоса прогресса */
+.audio-progress {
+    margin: 1.5rem 0;
+}
+
+progress {
+    width: 100%;
+    height: 12px;
+    border-radius: 10px;
+    border: none;
+    background: #f0f0f0;
+}
+
+progress::-webkit-progress-bar {
+    background: #f0f0f0;
+    border-radius: 10px;
+}
+
+progress::-webkit-progress-value {
+    background: linear-gradient(135deg, #eeaf3b 0%, #d88f06 100%);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+progress::-moz-progress-bar {
+    background: linear-gradient(135deg, #eeaf3b 0%, #d88f06 100%);
+    border-radius: 10px;
+}
+
+/* Поле ввода ответа */
+.answer-input {
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.answer-input label {
+    display: block;
+    margin-bottom: 12px;
+    color: #333;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+#answer {
+    padding: 12px 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    margin-right: 10px;
+    width: 200px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+#answer:focus {
+    outline: none;
+    border-color: #d88f06;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.answer-input button {
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    margin-top: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.answer-input button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+}
+
+#answerMessage {
+    display: block;
+    margin-top: 12px;
+    font-weight: bold;
+    font-size: 14px;
+    min-height: 20px;
+}
+
+/* Регулятор громкости */
+.volume-control {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.volume-control label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 600;
+}
+
+#volumeSlider {
+    width: 200px;
+    margin: 0 12px;
+    height: 6px;
+    border-radius: 3px;
+    background: #e9ecef;
+    outline: none;
+}
+
+#volumeSlider::-webkit-slider-thumb {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #d88f06;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+#volumeValue {
+    font-weight: bold;
+    color: #333;
+    font-size: 14px;
+}
+
+/* Кнопка рестарт */
+#restartButton {
+    padding: 14px 28px;
+    font-size: 16px;
+    background: linear-gradient(135deg, #FF6B6B 0%, #EE5A52 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 20px auto;
+    display: block;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+#restartButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .audio-player {
+        width: 95%;
+        padding: 1.5rem;
+        margin: 1rem auto;
+    }
+    
+    .difficulty-container {
+        padding: 2rem;
+    }
+    
+    .audio-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .audio-controls button {
+        width: 200px;
+    }
+    
+    #answer {
+        width: 150px;
+        margin-bottom: 10px;
+    }
+}
+
+/* Стили для заблокированного поля ввода */
+#answer:disabled {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+
+#restartButton:hover {
+    background-color: #45a049;
+}
+
+@media (max-width: 768px) {
+    .audio-player {
+        width: 90%;
+        margin: 1rem auto;
+    }
+    
+.track-info {
+    margin: 1rem 0;
+    font-size: 14px;
+    color: #555;
+}
+
+.track-info p {
+    margin: 0;
+}
+}
