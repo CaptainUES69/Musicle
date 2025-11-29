@@ -8,10 +8,25 @@
 </head>
 <body>
 
-    <!-- Экран выбора сложности -->
-    <section id="difficultyScreen" class="difficulty-screen">
+<!-- Экран выбора исполнителя -->
+<section id="artistScreen" class="artist-screen">
+    <div class="artist-container">
+        <h1>Yandex Music Quiz</h1>
+        <p>Введите имя исполнителя:</p>
+        
+        <div class="artist-input-container">
+            <input type="text" id="artistInput" placeholder="Например, The Beatles" class="artist-input">
+            <button onclick="selectArtist()" class="artist-button">Далее</button>
+        </div>
+        
+        <div id="artistMessage" class="artist-message"></div>
+    </div>
+</section>
+
+<!-- Экран выбора сложности -->
+<section id="difficultyScreen" class="difficulty-screen" style="display: none;">
         <div class="difficulty-container">
-            <h1>Музыкальный Квиз</h1>
+            <h1>Yandex Music Quiz</h1>
             <p>Выберите уровень сложности:</p>
             
             <div class="difficulty-options">
@@ -25,14 +40,17 @@
                     <span class="difficulty-desc">6 секунд на трек</span>
                 </button>
                 
-                <button class="difficulty-btn" onclick="startQuiz('hard')">
-                    <span class="difficulty-name">Сложный</span>
-                    <span class="difficulty-desc">2 секунды на трек</span>
-                </button>
-            </div>
-            
+               <button class="difficulty-btn" onclick="startQuiz('hard')">
+                <span class="difficulty-name">Сложный</span>
+                <span class="difficulty-desc">2 секунды на трек</span>
+            </button>
         </div>
-    </section>
+        
+        <!-- Кнопка возврата к выбору исполнителя -->
+        <button class="back-button" onclick="backToArtist()">← Назад к выбору исполнителя</button>
+        
+    </div>
+</section>
 
     <!-- Основной интерфейс квиза (изначально скрыт) -->
     <section id="quizScreen" class="audio-player" style="display: none;">
@@ -66,14 +84,14 @@
 
         <!-- Поле для ввода кода перехода -->
         <div class="answer-input">
-            <label for="answer">Введите название трека:</label>
-            <input type="text" id="answer" placeholder="Введите код...">
-            <button onclick="checkAnswer()">Проверить ответ</button>
+            <input type="text" id="answer" placeholder="Введите название трека...">
             <span id="answerMessage"></span>
-            
-            <!-- Кнопка рестарт -->
-            <button id="restartButton" onclick="restartQuiz()" style="display: none;">🎉 Начать заново!</button>
         </div>
+
+        <button class="answer-button" onclick="checkAnswer()">Проверить ответ</button>
+
+        <!-- Кнопка рестарт -->
+         <button id="restartButton" onclick="restartQuiz()" style="display: none;">Начать заново!</button>
 
         <!-- Регулятор громкости -->
         <div class="volume-control">

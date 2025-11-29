@@ -9,7 +9,82 @@ body {
     padding: 20px;
 }
 
-/* Стили для экрана выбора сложности (оставляем как есть) */
+/* Стили для экрана выбора исполнителя */
+.artist-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.artist-container {
+    background: white;
+    padding: 3rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+}
+
+.artist-container h1 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 2.5rem;
+}
+
+.artist-container > p {
+    color: #666;
+    margin-bottom: 2rem;
+    font-size: 1.2rem;
+}
+
+.artist-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.artist-input {
+    padding: 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    text-align: center;
+    transition: border-color 0.3s ease;
+}
+
+.artist-input:focus {
+    outline: none;
+    border-color: #d88f06;
+    box-shadow: 0 0 0 3px rgba(216, 143, 6, 0.1);
+}
+
+.artist-button {
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #eeaf3b 0%, #d88f06 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.artist-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(216, 143, 6, 0.4);
+}
+
+.artist-message {
+    min-height: 24px;
+    font-weight: bold;
+    margin-top: 1rem;
+}
+
+/* Стили для экрана выбора сложности */
 .difficulty-screen {
     display: flex;
     justify-content: center;
@@ -76,9 +151,27 @@ body {
     color: #666;
 }
 
+/* Кнопка возврата */
+.back-button {
+    background: none;
+    border: 2px solid #6c757d;
+    color: #6c757d;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-top: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.back-button:hover {
+    background: #6c757d;
+    color: white;
+}
 
 
-/* ОБНОВЛЕННЫЕ СТИЛИ ДЛЯ ОСНОВНОГО ИНТЕРФЕЙСА КВИЗА */
+
+/* СТИЛИ ДЛЯ ОСНОВНОГО ИНТЕРФЕЙСА КВИЗА */
 .audio-player {
     background: white;
     padding: 2.5rem;
@@ -193,19 +286,12 @@ progress::-moz-progress-bar {
 
 /* Поле ввода ответа */
 .answer-input {
-    margin: 1.5rem 0;
-    padding: 1.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.8rem;
+    padding: 0.6rem;
     background: #f8f9fa;
     border-radius: 10px;
     text-align: center;
-}
-
-.answer-input label {
-    display: block;
-    margin-bottom: 12px;
-    color: #333;
-    font-size: 1.1rem;
-    font-weight: 600;
 }
 
 #answer {
@@ -213,7 +299,7 @@ progress::-moz-progress-bar {
     border: 2px solid #e9ecef;
     border-radius: 8px;
     margin-right: 10px;
-    width: 200px;
+    width: 300px;
     font-size: 16px;
     transition: border-color 0.3s ease;
 }
@@ -224,13 +310,13 @@ progress::-moz-progress-bar {
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
-.answer-input button {
+.answer-button {
     padding: 12px 20px;
     background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
     color: white;
     border: none;
     border-radius: 8px;
-    margin-top: 10px;
+    margin-top: 5px;
     cursor: pointer;
     font-size: 16px;
     font-weight: 600;
@@ -238,7 +324,7 @@ progress::-moz-progress-bar {
     box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
 }
 
-.answer-input button:hover {
+.answer-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
 }
@@ -249,6 +335,22 @@ progress::-moz-progress-bar {
     font-weight: bold;
     font-size: 14px;
     min-height: 20px;
+}
+
+/* Кнопка рестарт */
+#restartButton {
+    padding: 14px 28px;
+    font-size: 16px;
+    background: linear-gradient(135deg, #FF6B6B 0%, #EE5A52 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 20px auto;
+    display: block;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
 }
 
 /* Регулятор громкости */
@@ -291,25 +393,20 @@ progress::-moz-progress-bar {
     font-size: 14px;
 }
 
-/* Кнопка рестарт */
-#restartButton {
-    padding: 14px 28px;
-    font-size: 16px;
-    background: linear-gradient(135deg, #FF6B6B 0%, #EE5A52 100%);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin: 20px auto;
-    display: block;
-    transition: all 0.3s ease;
-    font-weight: 600;
-    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
-}
 
 #restartButton:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+.difficulty-screen, .audio-player {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.difficulty-screen.hidden, .audio-player.hidden {
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
 }
 
 /* Адаптивность */

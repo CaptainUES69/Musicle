@@ -1,5 +1,49 @@
-// Глобальная переменная для хранения выбранной сложности
+// Глобальные переменные
 let selectedDifficulty = '';
+let selectedArtist = '';
+
+// Функция выбора исполнителя
+function selectArtist() {
+    const artistInput = document.getElementById('artistInput');
+    const artistMessage = document.getElementById('artistMessage');
+    const artistName = artistInput.value.trim();
+    
+    if (artistName === '') {
+        artistMessage.textContent = 'Пожалуйста, введите имя исполнителя';
+        artistMessage.style.color = 'red';
+        return;
+    }
+    
+    // Сохраняем выбранного исполнителя
+    selectedArtist = artistName;
+    
+    // Переходим к выбору сложности
+    document.getElementById('artistScreen').style.display = 'none';
+    document.getElementById('difficultyScreen').style.display = 'flex';
+    
+    // Очищаем сообщения
+    artistMessage.textContent = '';
+}
+
+// Обработка клавиши Enter в поле исполнителя
+document.getElementById('artistInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        selectArtist();
+    }
+});
+
+// Функция возврата к выбору исполнителя
+function backToArtist() {
+    // Скрываем экран выбора сложности
+    document.getElementById('difficultyScreen').style.display = 'none';
+    
+    // Показываем экран выбора исполнителя
+    document.getElementById('artistScreen').style.display = 'flex';
+    
+    // Очищаем поле ввода исполнителя (опционально)
+    // document.getElementById('artistInput').value = '';
+    // document.getElementById('artistMessage').textContent = '';
+}
 
 // Функция начала квиза
 function startQuiz(difficulty) {
@@ -82,18 +126,26 @@ function toggleRestartButton(show) {
     }
 }
 
-// Функция начала квиза заново
+// Функция начала квиза заново (возврат к выбору сложности)
 function restartQuiz() {
-    currentTrackIndex = 0;
-    loadTrack(currentTrackIndex);
-    toggleRestartButton(false); // Скрываем кнопку
-    answerInput.disabled = false; // Разблокируем поле ввода
-    answerMessage.textContent = "Квиз начался заново! Удачи!";
-    answerMessage.style.color = "blue";
+    // Скрываем интерфейс квиза
+    document.getElementById('quizScreen').style.display = 'none';
     
-    setTimeout(() => {
-        answerMessage.textContent = "";
-    }, 3000);
+    // Показываем экран выбора сложности
+    document.getElementById('difficultyScreen').style.display = 'flex';
+    
+    // Сбрасываем состояние квиза
+    currentTrackIndex = 0;
+    answerInput.value = "";
+    answerMessage.textContent = "";
+    answerInput.disabled = false;
+    
+    // Останавливаем воспроизведение
+    audio.pause();
+    audio.currentTime = 0;
+    
+    // Скрываем кнопку рестарт
+    toggleRestartButton(false);
 }
 
 // Инициализация - загружаем первый трек
@@ -156,29 +208,16 @@ function checkAnswer() {
         // Очищаем поле ввода
         answerInput.value = "";
         
-        // Через 3 секунды убираем сообщение (кроме финального)
-        if (currentTrackIndex !== trackList.length - 1) {
-            setTimeout(() => {
-                answerMessage.textContent = "";
-            }, 3000);
-        }
-        
     } else {
         // Ответ неправильный
         answerMessage.textContent = "Неверный ответ! Попробуйте снова.";
         answerMessage.style.color = "red";
-        
-        // Очищаем сообщение через 2 секунды
+    }
+    
+    // Очищаем сообщение через 2 секунды (кроме финального)
+    if (currentTrackIndex !== trackList.length - 1) {
         setTimeout(() => {
             answerMessage.textContent = "";
         }, 2000);
     }
 }
-
-// Обновление полосы прогресса
-audio.addEventListener('timeupdate', function() {
-    if (audio.duration) {
-        const progress = (audio.currentTime / audio.duration) * 100;
-        progressBar.value = progress;
-    }
-});
