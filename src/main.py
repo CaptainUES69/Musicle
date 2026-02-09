@@ -1,28 +1,20 @@
-from fastapi import FastAPI
-
-import uvicorn
-import asyncio
-
-from cfg import logging
-
-from download import download_by_name_artist, download_by_url_artist
+from src.music_api import AudioFile
+from src.audio_processing import AudioProccesing
 
 
-app = FastAPI()
+audio = AudioFile()
+proccessing = AudioProccesing()
 
-@app.get("/")
-async def main_page():
-    
-    
-    ...
+artists = audio.search_artist(input('Введите имя артиста: '))
 
-async def main():
-    download_by_name_artist(input("Имя Уолтер: "))
-    # uvicorn.run(app, host = "127.0.0.1", port = 8000)
+art = int(input('Введите номер нужного артиста: '))
+number = int(input('Введите кол-во нужных треков: '))
+tracks = audio.get_track_from_artist(artists[art], tracks_count = number)
 
+num = int(input('Введите кол-во нужных треков: '))
+choosed_tracks = proccessing.choose_tracks(tracks, num)
 
-if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except Exception as e:
-        logging.error(f"Ошибка при обрабокте запросов: {e}", exc_info=True)
+audio_bytes: list[bytes] = []
+for track in choosed_tracks:
+    audio_bytes.append(audio.get_bytes(track))
+
