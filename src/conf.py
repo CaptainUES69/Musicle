@@ -1,26 +1,42 @@
-from logging import INFO, Formatter, getLogger, Logger
+from logging import (CRITICAL, DEBUG, ERROR, INFO, WARNING, Formatter, Logger,
+                     getLogger)
 from logging.handlers import RotatingFileHandler
 
 
-
-class Logging:
-    logger: Logger
+class CustomLogger:
+    _logger: Logger
 
     def __init__(
-            self,
-            filename: str,
-            loggerName: str     
-        ):
-        self.logger = getLogger(loggerName)
-        self.logger.level = INFO
+        self,
+        filename: str,
+        loggerName: str = None,
+        level: int = INFO,
+        backupCount: int = 5,
+        formatter: Formatter = Formatter(
+            "%(asctime)s %(levelname)s -- %(funcName)s(%(lineno)d) - %(message)s"
+        ),
+    ) -> Logger:
+        """_summary_
+
+        Args:
+            filename (str): Название файла
+            loggerName (str, optional): Название логгера. По умолчанию равно имени файла.
+            level (int, optional): Уровень логирования по системе logging. По умолчанию равно INFO.
+            backupCount (int, optional): Количество бекапов файлов. По умолчанию равно 5 файлам.
+            formatter (Formatter, optional): Формат логов, по умолчанию Formatter("%(asctime)s %(levelname)s -- %(funcName)s(%(lineno)d) - %(message)s").
+        """
+        if not loggerName:
+            loggerName = filename
+        self._logger = getLogger(loggerName)
+        self._logger.level = level
+        self._logger.propagate = False
 
         handler = RotatingFileHandler(
-            filename = filename, 
-            maxBytes = (5 * 1024 * 1024), 
-            backupCount = 5, 
-            encoding = 'utf-8'
+            filename=f"{filename}.log",
+            maxBytes=(5 * 1024 * 1024),
+            backupCount=backupCount,
+            encoding="utf-8",
         )
-        formatter = Formatter("%(asctime)s %(levelname)s -- %(funcName)s(%(lineno)d) - %(message)s")
+
         handler.setFormatter(formatter)
-        self.logger.addHandler(handler)
-    
+        self._logger.addHandler(handler)
