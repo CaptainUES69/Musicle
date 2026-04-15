@@ -16,7 +16,7 @@ class ContinueRequest(BaseModel):
     length_ms: int = 15000  # длина сниппета в миллисекундах
 
 
-logger: Logger = CustomLogger(filename="webserver.log", loggerName="webserver")._logger
+logger: Logger = CustomLogger("webserver")._logger
 audio = AudioFile()
 methods = MethodsAudio()
 router = APIRouter(prefix="/tracks", tags=["tracks"])
