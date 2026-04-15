@@ -210,3 +210,4 @@ __marimo__/
 # ffmpeg и прочее
 *.exe
 proxy_list.json
+*.db
