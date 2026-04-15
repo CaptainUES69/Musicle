@@ -18,21 +18,6 @@ from yandex_music.utils.request_async import Request as RequestAsync
 from .conf import CustomLogger
 
 
-def handle_network_error(method):
-    """Декоратор, ловящий NetworkError и вызывающий self._rotate_proxy()"""
-
-    @wraps(method)
-    async def wrapper(self, *args, **kwargs):
-        try:
-            return await method(self, *args, **kwargs)
-        except NetworkError:
-            self.logger.warning("Ошибка сети, меняю прокси")
-            await self._rotate_proxy()
-            return await method(self, *args, **kwargs)  # повтор
-
-    return wrapper
-
-
 class AudioFile:
     """
     Класс для работы с YandexMusicApi и полученными аудиофайлами
