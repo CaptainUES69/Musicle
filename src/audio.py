@@ -12,8 +12,24 @@ from yandex_music.artist.artist import Artist
 from yandex_music.exceptions import InvalidBitrateError
 from yandex_music.track.track import Track
 from yandex_music.utils.request import Request
-
+from yandex_music.exceptions import NetworkError
 from .conf import CustomLogger
+from functools import wraps
+
+
+def handle_network_error(method):
+    """Декоратор, ловящий NetworkError и вызывающий self._rotate_proxy()"""
+
+    @wraps(method)
+    async def wrapper(self, *args, **kwargs):
+        try:
+            return await method(self, *args, **kwargs)
+        except NetworkError:
+            self.logger.warning("Ошибка сети, меняю прокси")
+            await self._rotate_proxy()
+            return await method(self, *args, **kwargs)  # повтор
+
+    return wrapper
 
 
 class AudioFile:
@@ -34,24 +50,65 @@ class AudioFile:
         with open("src/proxy_list.json", "r", encoding="utf-8") as f:
             self._proxy_list = load(f)["proxy"]
 
-    async def _rotate_proxy(self) -> None:
+    @staticmethod
+    def _rotate_proxy_sync(func):
         """
-        Ротация прокси в обоих клиентах путем их пересоздания
-        т.к. нет возможности изменять внутренние переменные 
-        и воизбежания вызова ошибок путем переписывания библиотеки
+        Декоратор: при возникновении NetworkError внутри func
+        перебирает прокси из self._proxy_list и повторяет вызов.
         """
-        proxy = self._proxy_list[randint(0, len(self._proxy_list)) - 1]
-        self.logger.info(f"Выбранный прокси: {proxy}")
+        @wraps(func)
+        async def wrapper(self, *args, **kwargs):
+            for proxy in self._proxy_list:
+                try:
+                    self.logger.info(f"Пробуем прокси: {proxy}")
+                    self.client = Client(
+                        token=getenv("YANDEX_TOKEN"),
+                        request=Request(proxy_url=proxy, timeout=60),
+                    ).init()
 
-        self.client = Client(
-            getenv("YANDEX_TOKEN"),
-            Request(proxy_url=proxy),
-        ).init()
+                    return await func(self, *args, **kwargs)
+                
+                except NetworkError as e:
+                    self.logger.warning(f"Прокси {proxy} не сработал: {e}")
+                    continue  
 
-        self.clientAsync = await ClientAsync(
-            getenv("YANDEX_TOKEN"),
-            Request(proxy_url=proxy),
-        ).init()
+                except Exception as e:
+                    self.logger.critical(f"Неизвестная ошибка: {e}")
+                    raise  
+
+            raise NetworkError("Все прокси из списка недоступны")
+        return wrapper
+
+    @staticmethod
+    def _rotate_proxy_async(func):
+        """
+        Асинхронный декоратор: при NetworkError внутри func
+        перебирает прокси из self._proxy_list, пересоздаёт clientAsync
+        и повторяет вызов.
+        """
+        @wraps(func)
+        async def wrapper(self, *args, **kwargs):
+            for proxy in self._proxy_list:
+                try:
+                    self.logger.info(f"Пробуем прокси (async): {proxy}")
+
+                    self.clientAsync = await ClientAsync(
+                        token=getenv("YANDEX_TOKEN"),
+                        request=Request(proxy_url=proxy, timeout=60),
+                    ).init()
+
+                    return await func(self, *args, **kwargs)
+
+                except NetworkError as e:
+                    self.logger.warning(f"Прокси {proxy} не ответил (async): {e}")
+                    continue 
+
+                except Exception as e:
+                    self.logger.critical(f"Неизвестная ошибка (async): {e}")
+                    raise 
+
+            raise NetworkError("Все прокси из списка недоступны (async)")
+        return wrapper
 
     async def _ensure_async_client(self) -> None:
         """Создание асинхронного клиента"""
@@ -62,6 +119,7 @@ class AudioFile:
 
     # Основные методы
 
+    @_rotate_proxy_sync
     def get_track_by_id(self, track_ids: List[str | int] | int | str) -> List[Track]:
         """
         Возвращает список объектов Track по их id
@@ -76,6 +134,7 @@ class AudioFile:
         self.logger.info(f"{len(tracks)} треков найдено")
         return tracks
 
+    @_rotate_proxy_sync
     def get_bytes(self, track: Track, bitrate_in_kbps: int = 192) -> bytes:
         """
         Возвращает объект Track в виде байтов
@@ -99,6 +158,7 @@ class AudioFile:
             )
             return track.download_bytes(bitrate_in_kbps=192)
 
+    @_rotate_proxy_sync
     def search_artist(self, artist_name: str) -> Optional[List[Artist]]:
         """
         Возвращает список найденных артистов
@@ -198,6 +258,7 @@ class AudioFile:
 
     # Асинхронные варианты
 
+    @_rotate_proxy_async
     async def get_track_by_id_async(
         self, track_ids: List[str | int] | int | str
     ) -> List[Track]:
@@ -215,6 +276,7 @@ class AudioFile:
         self.logger.info(f"{len(tracks)} треков найдено")
         return tracks
 
+    @_rotate_proxy_async
     async def get_bytes_async(self, track: Track, bitrate_in_kbps: int = 192) -> bytes:
         """
         Асинхронно возвращает объект Track в виде байтов
@@ -239,6 +301,7 @@ class AudioFile:
             )
             return await track.download_bytes_async(bitrate_in_kbps=192)
 
+    @_rotate_proxy_async
     async def search_artist_async(self, artist_name: str) -> Optional[List[Artist]]:
         """
         Асинхронно возвращает список найденных артистов
@@ -258,6 +321,7 @@ class AudioFile:
         self.logger.info(f"Найдены следующие артисты {search.artists.results}")
         return search.artists.results
 
+    @_rotate_proxy_async
     async def get_tracks_from_artist_async(
         self, artist: Artist, tracks_count: int = 200
     ) -> Optional[List[Track]]:
