@@ -1,5 +1,4 @@
-from logging import (CRITICAL, DEBUG, ERROR, INFO, WARNING, Formatter, Logger,
-                     getLogger)
+from logging import CRITICAL, DEBUG, ERROR, INFO, WARNING, Formatter, Logger, getLogger
 from logging.handlers import RotatingFileHandler
 
 

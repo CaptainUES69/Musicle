@@ -1,3 +1,4 @@
+from functools import wraps
 from io import BytesIO
 from json import load
 from logging import Logger
@@ -9,13 +10,12 @@ from dotenv import load_dotenv
 from pydub import AudioSegment
 from yandex_music import Client, ClientAsync
 from yandex_music.artist.artist import Artist
-from yandex_music.exceptions import InvalidBitrateError
+from yandex_music.exceptions import InvalidBitrateError, NetworkError
 from yandex_music.track.track import Track
 from yandex_music.utils.request import Request
 from yandex_music.utils.request_async import Request as RequestAsync
-from yandex_music.exceptions import NetworkError
+
 from .conf import CustomLogger
-from functools import wraps
 
 
 def handle_network_error(method):
@@ -81,11 +81,13 @@ class AudioFile:
 
                 except NetworkError as e:
                     self.logger.warning(f"Прокси {proxy} не ответил (sync): {e}")
-                    continue 
+                    continue
 
                 except Exception as e:
-                    self.logger.critical(f"Неизвестная ошибка (sync) на прокси {proxy}: {e}")
-                    raise 
+                    self.logger.critical(
+                        f"Неизвестная ошибка (sync) на прокси {proxy}: {e}"
+                    )
+                    raise
 
             raise NetworkError("Все прокси из списка недоступны (sync)")
 
@@ -121,11 +123,13 @@ class AudioFile:
 
                 except NetworkError as e:
                     self.logger.warning(f"Прокси {proxy} не ответил (async): {e}")
-                    continue 
+                    continue
 
                 except Exception as e:
-                    self.logger.critical(f"Неизвестная ошибка (async) на прокси {proxy}: {e}")
-                    raise 
+                    self.logger.critical(
+                        f"Неизвестная ошибка (async) на прокси {proxy}: {e}"
+                    )
+                    raise
 
             raise NetworkError("Все прокси из списка недоступны (async)")
 
