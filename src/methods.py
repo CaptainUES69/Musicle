@@ -6,7 +6,7 @@ from .audio import AudioFile
 from .conf import CustomLogger
 
 
-class MainLogic:
+class MethodsAudio:
     audio: AudioFile
     logger: Logger = CustomLogger("main_logic")._logger
 
