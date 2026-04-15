@@ -19,7 +19,7 @@ class ContinueRequest(BaseModel):
 logger: Logger = CustomLogger(filename="webserver.log", loggerName="webserver")._logger
 audio = AudioFile()
 methods = MethodsAudio()
-router = APIRouter(tags=["tracks"])
+router = APIRouter(prefix="tracks", tags=["tracks"])
 
 
 @router.get("/get_tracks/{artist_name}")
