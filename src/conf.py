@@ -31,7 +31,7 @@ class CustomLogger:
         self._logger.propagate = False
 
         handler = RotatingFileHandler(
-            filename=f"{filename}.log",
+            filename=f"logs/{filename}.log",
             maxBytes=(5 * 1024 * 1024),
             backupCount=backupCount,
             encoding="utf-8",
