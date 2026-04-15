@@ -1,8 +1,12 @@
+from asyncio import run as async_run
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from uvicorn import run
+from uvicorn import run as uvicorn_run
 
+from .api.leaderboard import router as leaderboard_router
 from .api.tracks import router as tracks_router
+from .database.core import init_db
 from .utils import cors_urls as sites
 
 app = FastAPI()
@@ -13,12 +17,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.include_router(tracks_router)
+
+routers = [tracks_router, leaderboard_router]
+for router in routers:
+    app.include_router(router)
 
 
 if __name__ == "__main__":
     try:
-        run(app=app, host="127.0.0.1", port=8000)
+        async_run(init_db())
+        uvicorn_run(app=app, host="127.0.0.1", port=8000)
 
     except KeyboardInterrupt:
         print("Exit")
