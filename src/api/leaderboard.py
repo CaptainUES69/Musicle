@@ -1,6 +1,6 @@
 from logging import Logger
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
@@ -33,11 +33,14 @@ async def create_update(user: UserModel):
         score=user.score,
     )
 
-    if status_code == 200:
+    if status_code == status.HTTP_200_OK:
         return JSONResponse(content="Updated succesfully", status_code=status_code)
 
-    elif status_code == 201:
+    elif status_code == status.HTTP_201_CREATED:
         return JSONResponse(content="Created succesfully", status_code=status_code)
+
+    elif status_code == status.HTTP_400_BAD_REQUEST:
+        return JSONResponse(content="Incorrect data", status_code=status_code)
 
     else:
         return JSONResponse(content="Data conflict try again", status_code=status_code)
