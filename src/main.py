@@ -1,4 +1,5 @@
 from asyncio import run as async_run
+from os import getenv
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -26,7 +27,9 @@ for router in routers:
 if __name__ == "__main__":
     try:
         async_run(init_db())
-        uvicorn_run(app=app, host="127.0.0.1", port=8000)
+        host = getenv("HOST", "127.0.0.1")
+        port = int(getenv("PORT", 8000))
+        uvicorn_run(app=app, host=host, port=port)
 
     except KeyboardInterrupt:
         print("Exit")
