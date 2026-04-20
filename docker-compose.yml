@@ -11,8 +11,8 @@ services:
       - PORT=8080
     volumes:
       - type: bind
-        source: ./src/database/musicle.db 
-        target: /app/src/database/musicle.db 
+        source: ./src/database
+        target: /app/src/database
       - type: bind
         source: ./src/proxy_list.json
         target: /app/src/proxy_list.json
