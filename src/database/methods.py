@@ -31,9 +31,9 @@ async def users_create(
                 await session.commit()
                 return user
 
-            except IntegrityError:
+            except (IntegrityError, ValueError) as e:
                 await session.rollback()
-                return
+                raise e
 
 
 async def users_read_current(nickname: str, artist: str, difficulty: DifficultyEnum):
@@ -134,23 +134,27 @@ async def upsert_user(
         artist=artist,
         difficulty=difficulty,
     )
-    if not user:
-        await users_create(
+    try:
+        if not user:
+            await users_create(
+                nickname=nickname,
+                artist=artist,
+                difficulty=difficulty,
+                score=score,
+            )
+            return status.HTTP_201_CREATED
+
+        update = await users_update_score(
             nickname=nickname,
             artist=artist,
             difficulty=difficulty,
             score=score,
         )
-        return status.HTTP_201_CREATED
+        if update:
+            return status.HTTP_200_OK
 
-    update = await users_update_score(
-        nickname=nickname,
-        artist=artist,
-        difficulty=difficulty,
-        score=score,
-    )
-    if update:
-        return status.HTTP_200_OK
-
-    else:
-        return status.HTTP_409_CONFLICT
+        else:
+            return status.HTTP_409_CONFLICT
+    
+    except ValueError:
+        return status.HTTP_400_BAD_REQUEST
