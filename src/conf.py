@@ -1,5 +1,6 @@
 from logging import CRITICAL, DEBUG, ERROR, INFO, WARNING, Formatter, Logger, getLogger
 from logging.handlers import RotatingFileHandler
+from os import makedirs, path
 
 
 class CustomLogger:
@@ -30,6 +31,8 @@ class CustomLogger:
         self._logger.level = level
         self._logger.propagate = False
 
+        if not path.exists(f"logs"):
+            makedirs(f"logs", exist_ok=True)
         handler = RotatingFileHandler(
             filename=f"logs/{filename}.log",
             maxBytes=(5 * 1024 * 1024),
