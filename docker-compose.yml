@@ -1,18 +1,19 @@
-version: '3.8'
-
 services:
   app:
     build: .
     container_name: my-fastapi-app
     ports:
-      - "8080:8080"
+      - "8000:8000"
     environment:
       - HOST=0.0.0.0
-      - PORT=8080
+      - PORT=8000
     volumes:
+      - ./logs:/app/logs
+      
       - type: bind
         source: ./src/database
         target: /app/src/database
+
       - type: bind
         source: ./src/proxy_list.json
         target: /app/src/proxy_list.json
