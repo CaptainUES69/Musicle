@@ -92,6 +92,7 @@ class AudioFile:
         async def wrapper(self, *args, **kwargs):
             try:
                 return await func(self, *args, **kwargs)
+            
             except NetworkError as e:
                 self.logger.warning(f"Без прокси ошибка: {e}. Переходим к прокси...")
 
@@ -353,6 +354,5 @@ class AudioFile:
             return None
 
         self.logger.info(f"Найдены следующие треки: {artistTracks.tracks}")
-        if randint(0, 1) == 0:
-            raise NetworkError
+        
         return artistTracks.tracks
