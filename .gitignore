@@ -211,3 +211,4 @@ __marimo__/
 *.exe
 proxy_list.json
 *.db
+logs/
