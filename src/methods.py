@@ -97,7 +97,7 @@ class MethodsAudio:
                 {
                     "title": track.title,
                     "artist": [name for name in track.artists_name()],
-                    "snippet_url": f"/tracks/snippet?track_id={track.id}&length_ms={length_ms}",
+                    "snippet_url": f"/tracks/snippet/{track.id}?length_ms={length_ms}",
                     "track_id": track.id,
                 }
             )

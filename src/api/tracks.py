@@ -38,7 +38,7 @@ async def continue_game(artist_name: str, request: ContinueRequest):
     )
 
 
-@router.get("/snippet")
+@router.get("/snippet/{track_id}")
 async def snippet(
     track_id: str | int, length_ms: int = Query(15000)
 ) -> StreamingResponse:
