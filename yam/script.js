@@ -1,7 +1,7 @@
 // ======================
 // API CONFIGURATION
 // ======================
-const API_BASE_URL = 'https://hemolyzis.ru';   // адрес вашего FastAPI сервера
+const API_BASE_URL = 'https://hemolyzis.ru/api';   // адрес вашего FastAPI сервера
 let currentAudioUrl = null;                      // для освобождения памяти
 let isLoading = false;
 
@@ -618,10 +618,10 @@ async function submitScore() {
     const formattedDifficulty = difficultyMap[selectedDifficulty] || 'Unknown';
 
     const scoreData = {
-        nickname: alias,
-        artist: selectedArtist,
-        difficulty: formattedDifficulty,
-        score: totalScore
+        "nickname": alias,
+        "artist": selectedArtist,
+        "difficulty": formattedDifficulty,
+        "score": totalScore
     };
 
     try {
