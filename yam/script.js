@@ -1,7 +1,7 @@
 // ======================
 // API CONFIGURATION
 // ======================
-const API_BASE_URL = 'http://localhost:8000';   // адрес вашего FastAPI сервера
+const API_BASE_URL = 'https://hemolyzis.ru';   // адрес вашего FastAPI сервера
 let currentAudioUrl = null;                      // для освобождения памяти
 let isLoading = false;
 
