@@ -7,7 +7,14 @@ body {
     min-height: 100vh;
     margin: 0;
     padding: 20px;
+
+    background-image: url('background.jpg'); /* путь к вашему файлу */
+    background-size: cover;                 /* масштабирует изображение на весь экран, сохраняя пропорции */
+    background-position: center;            /* центрирует изображение */
+    background-repeat: no-repeat;           /* не повторять */
+    background-attachment: fixed;           /* фиксирует фон при прокрутке (опционально) */
 }
+
 
 /* Стили для экрана выбора исполнителя */
 .artist-screen {
@@ -82,6 +89,68 @@ body {
     min-height: 24px;
     font-weight: bold;
     margin-top: 1rem;
+}
+
+/* Стиль для информации о сложности в квизе */
+.difficulty-info {
+    background: #f8f9fa;
+    padding: 0.8rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    border-left: 4px solid #eeaf3b;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* Индикатор загрузки */
+.loading-indicator {
+    text-align: center;
+    height: 45px;              /* фиксированная высота (подберите под свой спиннер) */
+    overflow: hidden;          /* чтобы при скрытии содержимое не вылезало */
+    transition: height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+    opacity: 1;
+    padding: 10px;             /* отступы вокруг спиннера */
+}
+
+.loading-indicator.hidden {
+    height: 0;
+    opacity: 0;
+    padding: 0;                /* убираем отступы, чтобы высота точно стала 0 */
+}
+
+.spinner {
+    display: block;
+    width: 28px;
+    height: 28px;
+    margin: 0 auto;
+    border: 4px solid #e0e0e0; /* чуть темнее */
+    border-top: 4px solid #d88f06;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    box-sizing: border-box; /* чтобы граница не увеличивала размер */
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Цвета для разных уровней сложности */
+.difficulty-easy {
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+.difficulty-medium {
+    color: #ff9800;
+    font-weight: bold;
+}
+
+.difficulty-hard {
+    color: #f44336;
+    font-weight: bold;
 }
 
 /* Стили для экрана выбора сложности */
@@ -169,7 +238,81 @@ body {
     color: white;
 }
 
+/* Финальный экран */
+.result-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
 
+.result-container {
+    background: white;
+    padding: 2rem 3rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.result-container h1 {
+    color: #d88f06;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+}
+
+.result-stats {
+    text-align: left;
+    margin: 2rem 0;
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 12px;
+}
+
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    margin: 0.8rem 0;
+    font-size: 1.2rem;
+}
+
+.result-label {
+    font-weight: 600;
+    color: #333;
+}
+
+.result-value {
+    font-weight: bold;
+    color: #d88f06;
+}
+
+.restart-button, .back-to-artist-button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 8px;
+    transition: all 0.3s ease;
+}
+
+.restart-button {
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    color: white;
+}
+
+.back-to-artist-button {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+    color: white;
+}
+
+.restart-button:hover, .back-to-artist-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
 
 /* СТИЛИ ДЛЯ ОСНОВНОГО ИНТЕРФЕЙСА КВИЗА */
 .audio-player {
@@ -369,15 +512,38 @@ progress::-moz-progress-bar {
 }
 
 #volumeSlider {
+    -webkit-appearance: none;
+    appearance: none;
     width: 200px;
     margin: 0 12px;
     height: 6px;
     border-radius: 3px;
-    background: #e9ecef;
+    background: linear-gradient(to right, #d88f06 0%, #d88f06 var(--fill-percent, 100%), #e0e0e0 var(--fill-percent, 100%), #e0e0e0 100%);
     outline: none;
 }
 
+/* таймер и счетчик */
+.quiz-stats {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0 20px;
+    padding: 8px 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    font-weight: 600;
+}
+.timer-display, .score-display {
+    font-size: 1rem;
+    color: #333;
+}
+#timerValue, #scoreValue {
+    font-weight: bold;
+    color: #d88f06;
+}
+
+/* Стили для ползунка в Chrome/Safari/Edge */
 #volumeSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
     appearance: none;
     width: 18px;
     height: 18px;
@@ -385,6 +551,23 @@ progress::-moz-progress-bar {
     background: #d88f06;
     cursor: pointer;
     box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* Стили для ползунка в Firefox */
+#volumeSlider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border: none;
+    border-radius: 50%;
+    background: #d88f06;
+    cursor: pointer;
+}
+
+/* Стили для трека в Firefox */
+#volumeSlider::-moz-range-track {
+    height: 6px;
+    background: linear-gradient(135deg, #eeaf3b 0%, #d88f06 100%);
+    border-radius: 3px;
 }
 
 #volumeValue {
@@ -467,4 +650,118 @@ progress::-moz-progress-bar {
 .track-info p {
     margin: 0;
 }
+}
+
+.result-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.share-button, .leaderboard-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.share-button {
+    background: linear-gradient(135deg, #2196F3 0%, #0b7dda 100%);
+    color: white;
+}
+
+.leaderboard-button {
+    background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
+    color: white;
+}
+
+.share-button:hover, .leaderboard-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+/* Модальные окна */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.leaderboard-content {
+    max-width: 500px;
+}
+
+.close {
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #aaa;
+}
+
+.close:hover {
+    color: #333;
+}
+
+.alias-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1.2rem;
+    text-align: center;
+    letter-spacing: 2px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    margin: 15px 0;
+}
+
+.error-message {
+    color: red;
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+}
+
+.modal-submit {
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.leaderboard-list {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 20px;
+}
+
+.leaderboard-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+    font-size: 1rem;
 }

@@ -50,6 +50,36 @@
         <button class="back-button" onclick="backToArtist()">← Назад к выбору исполнителя</button>
         
     </div>
+
+    
+</section>
+<!-- Финальный экран -->
+<section id="resultScreen" class="result-screen" style="display: none;">
+    <div class="result-container">
+        <h1>🎉 Квиз завершён! 🎉</h1>
+        <div class="result-stats">
+            <div class="result-item">
+                <span class="result-label">🏆 Ваш счёт:</span>
+                <span id="finalScore" class="result-value">0</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">⚡ Сложность:</span>
+                <span id="finalDifficulty" class="result-value"></span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">🎵 Исполнитель:</span>
+                <span id="finalArtist" class="result-value"></span>
+            </div>
+            <!-- При желании добавьте общее время (если считаете) -->
+        </div>
+        <button class="restart-button" onclick="restartFromResult()">Играть снова</button>
+        <button class="back-to-artist-button" onclick="backToArtistFromResult()">Выбрать другого исполнителя</button>
+        <div class="result-buttons">
+        <button class="share-button" onclick="openShareModal()">📤 Поделиться результатом</button>
+        <button class="leaderboard-button" onclick="showLeaderboard()">🏆 Таблица лидеров</button>
+    </div>
+    </div>
+
 </section>
 
     <!-- Основной интерфейс квиза (изначально скрыт) -->
@@ -59,27 +89,41 @@
     <div class="quiz-title">
         YAMQUIZ
     </div>
+
+    <div class="difficulty-info">
+        Уровень сложности: <span id="selectedDifficultyDisplay">Не выбран</span>
+    </div>
         
         <!-- Сам аудиофайл (остается невидимым) -->
         <audio id="myAudio">
             <!-- Источник теперь будет меняться через JavaScript -->
         </audio>
+
+        <!-- Индикатор загрузки -->
+        <div id="loadingIndicator" class="loading-indicator hidden">
+            <div class="spinner"></div>
+        </div>
         
         <!-- Кнопки управления -->
         <div class="audio-controls">
             <button onclick="playAudio()">Старт</button>
-            <button onclick="pauseAudio()">Пауза</button>
+            <button onclick="skipTrack()">Пропустить</button>
             <button onclick="restartAudio()">С начала</button>
-        </div>
-
-        <!-- Информация о текущем треке -->
-        <div class="track-info">    
-            <p>Сейчас играет: <span id="currentTrackName">Трек 1</span></p>
-        </div>
+        </div>  
         
         <!-- Полоса прогресса -->
         <div class="audio-progress">
             <progress id="audioProgress" value="0" max="100"></progress>
+        </div>
+
+        <!-- таймер и счетчик -->
+        <div class="quiz-stats">
+            <div class="timer-display">
+                Время: <span id="timerValue">0.0</span> сек
+            </div>
+            <div class="score-display">
+        🏆 Счёт: <span id="scoreValue">0</span>
+            </div>
         </div>
 
         <!-- Поле для ввода кода перехода -->
@@ -90,17 +134,37 @@
 
         <button class="answer-button" onclick="checkAnswer()">Проверить ответ</button>
 
-        <!-- Кнопка рестарт -->
-         <button id="restartButton" onclick="restartQuiz()" style="display: none;">Начать заново!</button>
-
         <!-- Регулятор громкости -->
         <div class="volume-control">
             <label for="volumeSlider">Громкость:</label>
-            <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1" oninput="changeVolume(this.value)">
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1">
             <span id="volumeValue">100%</span>
         </div>
     </section>
 
+<!-- Модальное окно для ввода псевдонима -->
+<div id="shareModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeShareModal()">&times;</span>
+        <h2>Введите ваш псевдоним</h2>
+        <input type="text" id="playerAlias" maxlength="4" placeholder="4 символа" class="alias-input">
+        <div id="aliasError" class="error-message" style="display: none;">Только буквы и цифры, 4 символа</div>
+        <button class="modal-submit" onclick="submitScore()">Отправить</button>
+    </div>
+</div>
+
+<!-- Модальное окно для таблицы лидеров -->
+<div id="leaderboardModal" class="modal" style="display: none;">
+    <div class="modal-content leaderboard-content">
+        <span class="close" onclick="closeLeaderboardModal()">&times;</span>
+        <h2>Топ-10 игроков</h2>
+        <div id="leaderboardList" class="leaderboard-list">
+            <!-- Здесь будет таблица -->
+        </div>
+    </div>
+</div>
+
 <script src="script.js"></script>
+
 </body>
 </html>
