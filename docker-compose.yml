@@ -6,6 +6,7 @@ services:
     environment:
       - HOST=0.0.0.0
       - PORT=8000
+      - YANDEX_TOKEN=TOKEN_HERE
     volumes:
       - ./logs:/app/logs
       # - ./data/database:/app/src/database
