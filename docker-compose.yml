@@ -1,20 +1,28 @@
 services:
-  app:
+  backend:
     build: .
-    container_name: my-fastapi-app
-    ports:
-      - "8000:8000"
+    container_name: backend
+    restart: unless-stopped
     environment:
       - HOST=0.0.0.0
       - PORT=8000
     volumes:
       - ./logs:/app/logs
-      
-      - type: bind
-        source: ./src/database
-        target: /app/src/database
+      # - ./data/database:/app/src/database
+      - ./src/database:/app/src/database
+      - ./src/proxy_list.json:/app/src/proxy_list.json
 
-      - type: bind
-        source: ./src/proxy_list.json
-        target: /app/src/proxy_list.json
-    restart: unless-stopped 
+  nginx:
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt/live/hemolyzis.ru/fullchain.pem:/etc/nginx/certs/fullchain.pem:ro
+      - /etc/letsencrypt/live/hemolyzis.ru/privkey.pem:/etc/nginx/certs/privkey.pem:ro
+    depends_on:
+      - backend
+    restart: unless-stopped

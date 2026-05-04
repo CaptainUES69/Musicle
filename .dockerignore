@@ -14,8 +14,13 @@ venv
 .gitignore
 .dockerignore
 Dockerfile
-README.md
 *.exe
 LICENSE
 *.yml
-logs/
+frontend
+nginx
+logs
+*.md
+.env
+proxy_list.json
+src/database
