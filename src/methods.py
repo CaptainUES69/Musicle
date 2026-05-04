@@ -35,12 +35,14 @@ class MethodsAudio:
         """
         artist = self.audio.search_artist(artist_name)
         if not artist:
-            return {
-                "title": "ERROR",
-                "artist": "ERROR",
-                "snippet_url": "ERROR",
-                "track_id": "ERROR",
-            }
+            return [
+                {
+                    "title": "ERROR",
+                    "artist": ["ERROR"],
+                    "snippet_url": "ERROR",
+                    "track_id": "ERROR",
+                }
+            ]
         tracks = self.audio.get_tracks_from_artist(artist[0])
         track_list = self.audio.choose_tracks(tracks, rounds, repeats)
 
@@ -96,12 +98,14 @@ class MethodsAudio:
         """
         artist = await self.audio.search_artist_async(artist_name)
         if not artist:
-            return {
-                "title": "ERROR",
-                "artist": "ERROR",
-                "snippet_url": "ERROR",
-                "track_id": "ERROR",
-            }
+            return [
+                {
+                    "title": "ERROR",
+                    "artist": ["ERROR"],
+                    "snippet_url": "ERROR",
+                    "track_id": "ERROR",
+                }
+            ]
         tracks = await self.audio.get_tracks_from_artist_async(artist[0])
         track_list = self.audio.choose_tracks(tracks, rounds, repeats)
 
