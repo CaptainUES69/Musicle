@@ -16,6 +16,7 @@ from yandex_music.utils.request import Request
 from yandex_music.utils.request_async import Request as RequestAsync
 
 from .conf import CustomLogger
+from logging import WARNING
 
 
 class AudioFile:
@@ -26,7 +27,7 @@ class AudioFile:
     _proxy_list: list[str]
     client: Client
     clientAsync: ClientAsync = None
-    logger: Logger = CustomLogger("audio")._logger
+    logger: Logger = CustomLogger("audio", level=WARNING)._logger
 
     # Внутренние методы
 
@@ -92,7 +93,7 @@ class AudioFile:
         async def wrapper(self, *args, **kwargs):
             try:
                 return await func(self, *args, **kwargs)
-            
+
             except NetworkError as e:
                 self.logger.warning(f"Без прокси ошибка: {e}. Переходим к прокси...")
 
@@ -183,13 +184,14 @@ class AudioFile:
         search = self.client.search(artist_name, type_="artist")
 
         if not search or not search.artists:
+            self.logger.warning(f"Артиста {artist_name} не найдено")
             return None
 
         self.logger.info(f"Найдены следующие артисты {search.artists.results[:-1]}")
         return search.artists.results
 
     def get_tracks_from_artist(
-        self, artist: Artist, tracks_count: int = 20
+        self, artist: Artist, tracks_count: int = 200
     ) -> Optional[List[Track]]:
         """
         Получает треки у объекта `artist`
@@ -354,5 +356,5 @@ class AudioFile:
             return None
 
         self.logger.info(f"Найдены следующие треки: {artistTracks.tracks}")
-        
+
         return artistTracks.tracks
