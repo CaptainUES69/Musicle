@@ -26,6 +26,7 @@ router = APIRouter(prefix="/leaderboard", tags=["leaderboard"])
 
 @router.post("/user")
 async def create_update(user: UserModel):
+    logger.debug(user)
     status_code = await upsert_user(
         nickname=user.nickname,
         artist=user.artist,
@@ -40,6 +41,7 @@ async def create_update(user: UserModel):
         return JSONResponse(content="Created succesfully", status_code=status_code)
 
     elif status_code == status.HTTP_400_BAD_REQUEST:
+        logger.warning(f"400 status code: {user}")
         return JSONResponse(content="Incorrect data", status_code=status_code)
 
     else:
