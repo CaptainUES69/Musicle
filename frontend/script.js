@@ -13,6 +13,7 @@ let currentTimer = null;          // идентификатор таймера
 let startTime = null;             // время начала ответа (в миллисекундах)
 const MIN_SCORE = 10;             // минимальное количество очков за ответ
 let scoreShareSent = false;   // флаг: был ли результат уже отправлен
+let canonicalArtist = '';
 // Названия сложностей
 const difficultyNames = {
     'easy': 'Легкий',
@@ -106,6 +107,8 @@ function backToArtist() {
 
 async function startQuiz(difficulty) {
     selectedDifficulty = difficulty;
+    // Сброс истинного артиста
+    canonicalArtist = '';
 
     // Если есть сохранённые ID для continue – используем их
     const continueIds = sessionStorage.getItem('continueIds');
@@ -152,6 +155,8 @@ function getMetadataEndpoint(artist, difficulty) {
     return `${API_BASE_URL}/tracks/get_tracks/${encodeURIComponent(artist)}?rounds=${DEFAULT_ROUNDS}&length_ms=${lengthMs}`;
 }
 
+
+
 // Список треков (будет заполнен с сервера)
 let trackList = [];
 
@@ -188,9 +193,36 @@ async function fetchTracks(artist, difficulty, usedIds = null) {
             snippetUrl: item.snippet_url,
             correctAnswer: item.title
         }));
+
+        // Подсчёт частоты имён исполнителей
+        const freq = {};
+        tracksData.forEach(track => {
+            if (track.artist && Array.isArray(track.artist)) {
+                track.artist.forEach(artistName => {
+                    freq[artistName] = (freq[artistName] || 0) + 1;
+                });
+            }
+        });
+
+        if (Object.keys(freq).length > 0) {
+            // Находим имя с максимальной частотой
+            let maxCount = 0;
+            let mostFrequent = '';
+            for (const [name, count] of Object.entries(freq)) {
+                if (count > maxCount) {
+                    maxCount = count;
+                    mostFrequent = name;
+                }
+            }
+            canonicalArtist = mostFrequent;
+        } else {
+            canonicalArtist = artist; // fallback
+        }
+        console.log('Каноническое имя исполнителя:', canonicalArtist);
+
         console.log('Загружено треков:', trackList.length);
     } catch (error) {
-        // обработка ошибок (оставляем как было)
+        throw error;
     }
 }
 
@@ -335,7 +367,7 @@ function calculateScore(elapsedSeconds, maxTime) {
 
 // Функция получения максимального времени для сложности
 function getMaxTimeForDifficulty(difficulty) {
-    return 15;
+    return 25;
 }
 
 // Функция регулировки громкости
@@ -359,7 +391,7 @@ function playAudio() {
 
 
 // Функция скипа
-function skipTrack() {
+async function skipTrack() {
     if (isLoading) {
         console.log('Аудио ещё загружается, подождите');
         return;
@@ -380,7 +412,7 @@ function skipTrack() {
         setTimeout(() => answerMessage.textContent = "", 1500);
 
         // Загружаем новый трек (поле ввода автоматически заблокируется в loadTrack)
-        loadTrack(currentTrackIndex).then(() => {
+        await loadTrack(currentTrackIndex).then(() => {
             // Не запускаем воспроизведение автоматически – ждём нажатия "Старт"
             // Таймер не запускается до нажатия "Старт"
         });
@@ -391,6 +423,12 @@ function skipTrack() {
 // Функция перезапуска текущего трека
 function restartAudio() {
     if (isLoading) return;
+    if (startTime === null) {
+        answerMessage.textContent = "Сначала нажмите «Старт»!";
+        answerMessage.style.color = "orange";
+        setTimeout(() => answerMessage.textContent = "", 1500);
+        return;
+    }
     audio.currentTime = 0;
     audio.play().catch(e => console.error('play error:', e));
 }
@@ -400,6 +438,13 @@ async function checkAnswer() {
     const userInput = answerInput.value.trim();
     const currentTrack = trackList[currentTrackIndex];
     const correctAnswer = currentTrack.correctAnswer;
+
+    if (startTime === null) {
+        answerMessage.textContent = "Сначала нажмите «Старт»!";
+        answerMessage.style.color = "orange";
+        setTimeout(() => answerMessage.textContent = "", 2000);
+        return;
+    }
 
     // Нормализация
     const normalize = (s) => {
@@ -512,7 +557,7 @@ function showResultScreen() {
 
     finalScoreSpan.textContent = totalScore;
     finalDifficultySpan.textContent = difficultyNames[selectedDifficulty] || selectedDifficulty;
-    finalArtistSpan.textContent = selectedArtist || 'Неизвестно';
+    finalArtistSpan.textContent = canonicalArtist || selectedArtist || 'Неизвестно';
 
     document.getElementById('quizScreen').style.display = 'none';
     resultScreen.style.display = 'flex';
@@ -619,7 +664,7 @@ async function submitScore() {
 
     const scoreData = {
         "nickname": alias,
-        "artist": selectedArtist,
+        "artist": canonicalArtist,
         "difficulty": formattedDifficulty,
         "score": totalScore
     };
@@ -654,7 +699,7 @@ async function showLeaderboard() {
     document.getElementById('leaderboardModal').style.display = 'flex';
 
     try {
-        const url = `${API_BASE_URL}/leaderboard/top_artist/${encodeURIComponent(selectedArtist)}?limit=10`;
+        const url = `${API_BASE_URL}/leaderboard/top_artist/${encodeURIComponent(canonicalArtist)}?limit=10`;
         const response = await fetch(url);
 
         if (!response.ok) {
