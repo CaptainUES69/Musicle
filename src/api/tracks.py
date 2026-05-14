@@ -31,7 +31,7 @@ async def difficulty_manager(
     return await methods.metadata_async(artist_name, rounds, length_ms)
 
 
-@router.post("/continue/{artist_name}")
+@router.post("/get_tracks/{artist_name}")
 async def continue_game(artist_name: str, request: ContinueRequest):
     return await methods.metadata_async(
         artist_name, request.rounds, request.length_ms, request.repeats

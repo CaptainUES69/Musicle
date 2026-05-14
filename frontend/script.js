@@ -174,7 +174,7 @@ async function fetchTracks(artist, difficulty, usedIds = null) {
                 rounds: DEFAULT_ROUNDS,
                 length_ms: lengthMs
             };
-            response = await fetch(`${API_BASE_URL}/tracks/continue/${encodeURIComponent(artist)}`, {
+            response = await fetch(`${API_BASE_URL}/tracks/get_tracks/${encodeURIComponent(artist)}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
