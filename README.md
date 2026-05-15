@@ -77,8 +77,8 @@ docker-compose up
 | `GET/POST` | `/api/tracks/get_tracks/<artist_name>` | Получение метаданных треков |
 | `GET` | `/api/tracks/snippet/<track_id>` | Получение аудио |
 | `POST` | `/api/leaderboard/user` | Создание/обновление данных в бд |
-| `GET` | `/api//leaderboard/top` | Получение топа игроков |
-| `GET` | `/api//leaderboard/top_artist/<artist_name>` | Получение топа игроков по артисту |
+| `GET` | `/api/leaderboard/top` | Получение топа игроков |
+| `GET` | `/api/leaderboard/top_artist/<artist_name>` | Получение топа игроков по артисту |
 
 
 
