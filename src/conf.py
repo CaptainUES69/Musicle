@@ -1,6 +1,17 @@
-from logging import CRITICAL, DEBUG, ERROR, INFO, WARNING, Formatter, Logger, getLogger
+from logging import (
+    CRITICAL,
+    DEBUG,
+    ERROR,
+    INFO,
+    WARNING,
+    Formatter,
+    Logger,
+    getLogger,
+    StreamHandler,
+)
 from logging.handlers import RotatingFileHandler
 from os import makedirs, path
+from sys import stdout
 
 
 class CustomLogger:
@@ -10,11 +21,12 @@ class CustomLogger:
         self,
         filename: str,
         loggerName: str = None,
-        level: int = INFO,
+        level: int = WARNING,
         backupCount: int = 5,
         formatter: Formatter = Formatter(
             "%(asctime)s %(levelname)s -- %(funcName)s(%(lineno)d) - %(message)s"
         ),
+        debugMode: bool = False,
     ) -> Logger:
         """_summary_
 
@@ -31,14 +43,24 @@ class CustomLogger:
         self._logger.level = level
         self._logger.propagate = False
 
-        if not path.exists(f"logs"):
-            makedirs(f"logs", exist_ok=True)
-        handler = RotatingFileHandler(
-            filename=f"logs/{filename}.log",
-            maxBytes=(5 * 1024 * 1024),
-            backupCount=backupCount,
-            encoding="utf-8",
-        )
+        if debugMode:
+            if not path.exists(f"logs"):
+                makedirs(f"logs", exist_ok=True)
 
-        handler.setFormatter(formatter)
-        self._logger.addHandler(handler)
+            file_handler = RotatingFileHandler(
+                filename=f"logs/{filename}.log",
+                maxBytes=(5 * 1024 * 1024),
+                backupCount=backupCount,
+                encoding="utf-8",
+            )
+            file_handler.setFormatter(formatter)
+            self._logger.addHandler(file_handler)
+
+            console_handler = StreamHandler(stdout)
+            console_handler.setFormatter(formatter)
+            self._logger.addHandler(console_handler)
+
+        else:
+            handler = StreamHandler(stdout)
+            handler.setFormatter(formatter)
+            self._logger.addHandler(handler)

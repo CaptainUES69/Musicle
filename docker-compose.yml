@@ -9,9 +9,8 @@ services:
       - HOST=0.0.0.0
       - PORT=8000
       - YANDEX_TOKEN=TOKEN_HERE
+      - APP_MODE=dev/production
     volumes:
-      - ./logs:/app/logs
-      # - ./data/database:/app/src/database
       - ./src/database:/app/src/database
       - ./src/proxy_list.json:/app/src/proxy_list.json
 

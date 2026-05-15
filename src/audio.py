@@ -27,7 +27,7 @@ class AudioFile:
     _proxy_list: list[str]
     client: Client
     clientAsync: ClientAsync = None
-    logger: Logger = CustomLogger("audio", level=WARNING)._logger
+    logger: Logger = CustomLogger("audio")._logger
 
     # Внутренние методы
 
