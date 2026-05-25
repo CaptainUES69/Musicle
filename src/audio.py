@@ -16,7 +16,6 @@ from yandex_music.utils.request import Request
 from yandex_music.utils.request_async import Request as RequestAsync
 
 from .conf import CustomLogger
-from logging import WARNING
 
 
 class AudioFile:
@@ -229,8 +228,8 @@ class AudioFile:
         """
         if repeats is None:
             repeats = set()
-        tracks_id: list[str | int] = []
-        tracks_list: list[Track] = []
+        tracks_id: list[str | int] = [] # Список id для фильтрации
+        tracks_list: list[Track] = [] # Отсортированные треки
 
         self.logger.info("Начинается отбор треков")
         while len(tracks_list) < count:

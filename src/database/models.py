@@ -32,12 +32,31 @@ class Users(Base):
 
     @validates("nickname")
     def validate_nickname(self, key: str, value: str):
+        """Валидация поля nickname
+
+        :param key: название поля для валидации в данном случае - nickname
+        :type key: str
+        :param value: Значение для валидации
+        :type value: str
+        :raises ValueError: Превышение ограничения символов
+        :return: ValueError
+        :rtype: str
+        """        
         if len(value) > 5:
             raise ValueError("Nickname must be 5 characters or fewer")
         return value
 
     @validates("difficulty")
     def validate_status(self, key: str, value: str):
+        """Валидация поля difficulty
+
+        :param key: название поля для валидации в данном случае - difficulty
+        :type key: str
+        :param value: Значение для валидации
+        :type value: str
+        :return: Значение сложности
+        :rtype: str
+        """        
         allowed_statuses = DifficultyEnum.get_values()
         if value not in allowed_statuses:
             value = DifficultyEnum.Unknown.value

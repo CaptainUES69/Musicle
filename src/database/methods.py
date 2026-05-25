@@ -17,6 +17,20 @@ async def users_create(
     difficulty: DifficultyEnum = DifficultyEnum.Unknown,
     score: int = 0,
 ) -> Users:
+    """Создание пользователя
+
+    :param nickname: Имя игрока
+    :type nickname: str
+    :param artist: Имя Артиста
+    :type artist: str
+    :param difficulty: Сложность игры, по умолчанию равен DifficultyEnum.Unknown
+    :type difficulty: DifficultyEnum, необязательно
+    :param score: Очки игрока, по умолчанию равен 0
+    :type score: int, необязательно
+    :raises e: Ошибка при создании пользователя (IntegrityError, ValueError)
+    :return: Запись с данными пользователя
+    :rtype: Users
+    """
     async with AsyncSessionLocal() as session:
         async with session.begin():
             user = Users(
@@ -36,7 +50,20 @@ async def users_create(
                 raise e
 
 
-async def users_read_current(nickname: str, artist: str, difficulty: DifficultyEnum):
+async def users_read_current(
+    nickname: str, artist: str, difficulty: DifficultyEnum
+) -> Users:
+    """Поиск пользователя по данным
+
+    :param nickname: Имя игрока
+    :type nickname: str
+    :param artist: Имя артиста
+    :type artist: str
+    :param difficulty: Сложность игры
+    :type difficulty: DifficultyEnum
+    :return: Строка игрока
+    :rtype: Users
+    """
     async with AsyncSessionLocal() as session:
         async with session.begin():
             user_search = (
@@ -55,6 +82,13 @@ async def users_read_current(nickname: str, artist: str, difficulty: DifficultyE
 
 
 async def users_read_top(limit: int) -> list[Users]:
+    """Считывание Топ N игроков
+
+    :param limit: Предел игроков которых нужно выбрать
+    :type limit: int
+    :return: Лист со значениями игроков (Никнейм, Очки)
+    :rtype: list[Users]
+    """
     async with AsyncSessionLocal() as session:
         async with session.begin():
             top = (
@@ -67,7 +101,16 @@ async def users_read_top(limit: int) -> list[Users]:
             return list(result.scalars().all())
 
 
-async def users_read_top_artist(limit: int, artist: str):
+async def users_read_top_artist(limit: int, artist: str) -> list[Users]:
+    """Считывание топа игроков по артисту
+
+    :param limit: Предел игроков которых нужно выбрать
+    :type limit: int
+    :param artist: Имя артиста
+    :type artist: str
+    :return: Лист со значениями игроков (Никнейм, Очки)
+    :rtype: list[Users]
+    """
     async with AsyncSessionLocal() as session:
         async with session.begin():
             top = (
@@ -87,7 +130,22 @@ async def users_update_score(
     difficulty: DifficultyEnum,
     score: int,
     max_retries: int = 3,
-):
+) -> Users:
+    """Обновление очков у пользователя
+
+    :param nickname: Имя игрока
+    :type nickname: str
+    :param artist: Имя артиста
+    :type artist: str
+    :param difficulty: Сложность игры
+    :type difficulty: DifficultyEnum
+    :param score: Очки игрока
+    :type score: int
+    :param max_retries: Максимальное кол-во попыток, по умолчанию равно 3
+    :type max_retries: int, опционально
+    :return: Строка с пользовательскими данными
+    :rtype: Users
+    """
     for attempt in range(max_retries):
         async with AsyncSessionLocal() as session:
             async with session.begin():
@@ -114,7 +172,9 @@ async def users_update_score(
                     await session.commit()
                     return user
 
-                except StaleDataError:
+                except (
+                    StaleDataError
+                ):  # Ошибка изменения данных, откатываем транзакцию и пробуем заново
                     await session.rollback()
                     if attempt == max_retries - 1:
                         raise
@@ -128,7 +188,20 @@ async def upsert_user(
     artist: str,
     difficulty: DifficultyEnum,
     score: int,
-):
+) -> int:
+    """Добавить/обновить пользователя
+
+    :param nickname: Имя пользователя
+    :type nickname: str
+    :param artist: Имя артиста
+    :type artist: str
+    :param difficulty: Сложность игры
+    :type difficulty: DifficultyEnum
+    :param score: Кол-во очков
+    :type score: int
+    :return: Значения http кода
+    :rtype: int
+    """
     user = await users_read_current(
         nickname=nickname,
         artist=artist,
@@ -155,6 +228,6 @@ async def upsert_user(
 
         else:
             return status.HTTP_409_CONFLICT
-    
+
     except ValueError:
         return status.HTTP_400_BAD_REQUEST
