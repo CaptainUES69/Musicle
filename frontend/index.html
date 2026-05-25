@@ -15,7 +15,7 @@
         <p>Введите имя исполнителя:</p>
         
         <div class="artist-input-container">
-            <input type="text" id="artistInput" placeholder="Например, The Beatles" class="artist-input">
+            <input type="text" id="artistInput" placeholder="Например, Kanye West" class="artist-input">
             <button onclick="selectArtist()" class="artist-button">Далее</button>
         </div>
         
@@ -56,18 +56,18 @@
 <!-- Финальный экран -->
 <section id="resultScreen" class="result-screen" style="display: none;">
     <div class="result-container">
-        <h1>🎉 Квиз завершён! 🎉</h1>
+        <h1>Квиз завершён!</h1>
         <div class="result-stats">
             <div class="result-item">
-                <span class="result-label">🏆 Ваш счёт:</span>
+                <span class="result-label">Ваш счёт:</span>
                 <span id="finalScore" class="result-value">0</span>
             </div>
             <div class="result-item">
-                <span class="result-label">⚡ Сложность:</span>
+                <span class="result-label">Сложность:</span>
                 <span id="finalDifficulty" class="result-value"></span>
             </div>
             <div class="result-item">
-                <span class="result-label">🎵 Исполнитель:</span>
+                <span class="result-label">Исполнитель:</span>
                 <span id="finalArtist" class="result-value"></span>
             </div>
             <!-- При желании добавьте общее время (если считаете) -->
@@ -75,14 +75,14 @@
         <button class="restart-button" onclick="restartFromResult()">Играть снова</button>
         <button class="back-to-artist-button" onclick="backToArtistFromResult()">Выбрать другого исполнителя</button>
         <div class="result-buttons">
-        <button class="share-button" onclick="openShareModal()">📤 Поделиться результатом</button>
-        <button class="leaderboard-button" onclick="showLeaderboard()">🏆 Таблица лидеров</button>
+        <button class="share-button" onclick="openShareModal()">Поделиться результатом</button>
+        <button class="leaderboard-button" onclick="showLeaderboard()">Таблица лидеров</button>
     </div>
     </div>
 
 </section>
 
-    <!-- Основной интерфейс квиза (изначально скрыт) -->
+    <!-- Основной интерфейс квиза -->
     <section id="quizScreen" class="audio-player" style="display: none;">
 
             <!-- Заголовок -->
@@ -94,9 +94,8 @@
         Уровень сложности: <span id="selectedDifficultyDisplay">Не выбран</span>
     </div>
         
-        <!-- Сам аудиофайл (остается невидимым) -->
+        <!-- Аудиофайл -->
         <audio id="myAudio">
-            <!-- Источник теперь будет меняться через JavaScript -->
         </audio>
 
         <!-- Индикатор загрузки -->
@@ -116,13 +115,13 @@
             <progress id="audioProgress" value="0" max="100"></progress>
         </div>
 
-        <!-- таймер и счетчик -->
+        <!-- Таймер и счетчик -->
         <div class="quiz-stats">
             <div class="timer-display">
                 Время: <span id="timerValue">0.0</span> сек
             </div>
             <div class="score-display">
-        🏆 Счёт: <span id="scoreValue">0</span>
+        Счёт: <span id="scoreValue">0</span>
             </div>
         </div>
 

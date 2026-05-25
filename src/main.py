@@ -1,4 +1,3 @@
-from asyncio import run as async_run
 from os import getenv
 
 from contextlib import asynccontextmanager
